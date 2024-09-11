@@ -2,6 +2,12 @@
 
 Easily run a UHC on your Spigot Server
 
+## Prereqs
+
+- Java 21
+- Maven
+- Git
+
 ## Getting started
 
 1. Clone the repo
