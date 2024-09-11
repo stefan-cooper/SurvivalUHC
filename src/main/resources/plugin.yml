@@ -1,0 +1,38 @@
+name: SpigotUHC
+version: 0.0.1
+author: Stefan Cooper
+main: com.stefancooper.SpigotUHC.Plugin
+api-version: 1.14
+website: https://stefancooper.com
+#commands:
+#  AddDoorbell:
+#    description: Add doorbell to coordinates to get motion notifications
+#    usage: /addDoorbell xCoordinate yCoordinate zCoordinate
+
+
+# TODO:
+# Doorbells:
+#   Physical doorbell:
+#     - Add doorbell for stone buttons named 'Doorbell' ✔
+#     - Send kafka events when user presses a type of doorbell ✔
+#     - Send kafka events when user is nearby physical doorbell ✔
+#   Process more information about the event
+#     - Which block motion is detected
+#     - Non Player motion (mobs)
+#   Do something with the kafka events in React
+#     - Send mobile notifications
+#     - Send email notifications
+#     - Send Browser Notifications ✔
+# Other:
+#   Subscribe (and produce) to other events in Minecraft
+#     - When a player joins the server ✔
+#     - When a player dies
+
+
+
+
+
+
+
+
+
