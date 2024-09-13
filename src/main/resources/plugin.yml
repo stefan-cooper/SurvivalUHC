@@ -6,5 +6,22 @@ api-version: 1.14
 website: https://stefancooper.com
 commands:
   uhc:
-    description: UHC Related commands
-    usage: /uhc --config world.border=500
+    description: Configure and run a UHC
+    usage: >
+      UHC Plugin Commands
+      
+      Set config value:
+      
+      /uhc set world.border.initial.size=500
+      
+      Set multiple config values:
+      
+      /uhc set world.border.initial.size=500 world.border.final.size=250
+      
+      View full config:
+      
+      /uhc view config
+      
+      View a specific config value:
+
+      /uhc view world.border.initial.size
