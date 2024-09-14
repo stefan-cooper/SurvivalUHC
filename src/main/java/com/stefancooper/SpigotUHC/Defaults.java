@@ -28,9 +28,9 @@ public class Defaults {
         final Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
         final Objective healthObjective;
         if (board.getObjective(HEALTH_OBJECTIVE) == null) {
-            healthObjective = board.getObjective(HEALTH_OBJECTIVE);
-        } else {
             healthObjective = board.registerNewObjective(HEALTH_OBJECTIVE, Criteria.HEALTH, "Health");
+        } else {
+            healthObjective = board.getObjective(HEALTH_OBJECTIVE);
         }
         healthObjective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
         healthObjective.setRenderType(RenderType.HEARTS);
