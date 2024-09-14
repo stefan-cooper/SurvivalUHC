@@ -2,6 +2,7 @@ package com.stefancooper.SpigotUHC;
 
 import com.stefancooper.SpigotUHC.types.Configurable;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.WorldBorder;
 
 import java.util.List;
@@ -20,6 +21,21 @@ public class ConfigParser {
     public Configurable<?> propertyToConfigurable(String key, String value) {
         return switch (fromString(key)) {
             case WORLD_BORDER_INITIAL_SIZE -> new Configurable<>(WORLD_BORDER_INITIAL_SIZE, Double.parseDouble(value));
+            case WORLD_BORDER_FINAL_SIZE -> new Configurable<>(WORLD_BORDER_FINAL_SIZE, Double.parseDouble(value));
+            case WORLD_BORDER_SHRINKING_PERIOD -> new Configurable<>(WORLD_BORDER_SHRINKING_PERIOD, Double.parseDouble(value));
+            case WORLD_BORDER_GRACE_PERIOD -> new Configurable<>(WORLD_BORDER_GRACE_PERIOD, Double.parseDouble(value));
+            case WORLD_BORDER_CENTER_X -> new Configurable<>(WORLD_BORDER_CENTER_X, Double.parseDouble(value));
+            case WORLD_BORDER_CENTER_Z -> new Configurable<>(WORLD_BORDER_CENTER_Z, Double.parseDouble(value));
+            case RANDOM_TEAMS_ENABLED -> new Configurable<>(RANDOM_TEAMS_ENABLED, Boolean.parseBoolean((value)));
+            case RANDOM_TEAM_SIZE -> new Configurable<>(RANDOM_TEAM_SIZE, Double.parseDouble(value));
+            case TEAM_RED -> new Configurable<>(TEAM_RED, value);
+            case TEAM_YELLOW -> new Configurable<>(TEAM_YELLOW, value);
+            case TEAM_GREEN -> new Configurable<>(TEAM_GREEN, value);
+            case TEAM_BLUE -> new Configurable<>(TEAM_BLUE, value);
+            case TEAM_ORANGE -> new Configurable<>(TEAM_ORANGE, value);
+            case GRACE_PERIOD_TIMER -> new Configurable<>(GRACE_PERIOD_TIMER, Double.parseDouble(value));
+            case ON_DEATH_ACTION -> new Configurable<>(ON_DEATH_ACTION, value);
+            case COUNTDOWN_TIMER_LENGTH -> new Configurable<>(COUNTDOWN_TIMER_LENGTH, Double.parseDouble(value));
             case WORLD_NAME -> new Configurable<>(WORLD_NAME, value);
             case null -> null;
 
@@ -36,6 +52,16 @@ public class ConfigParser {
                 Double newWorldBorderSize = (Double) configurable.value();
                 WorldBorder worldBorder = Bukkit.getWorld(config.getProp(WORLD_NAME.configName)).getWorldBorder();
                 worldBorder.setSize(newWorldBorderSize);
+                break;
+            case WORLD_BORDER_CENTER_X:
+                Double newWorldCenterX = (Double) configurable.value();
+                Double worldCenterX = Bukkit.getWorld(config.getProp(WORLD_NAME.configName)).getWorldBorder().getCenter().getX();
+                Bukkit.getWorld(config.getProp(WORLD_NAME.configName)).getWorldBorder().setCenter(worldCenterX, newWorldCenterX);
+                break;
+            case WORLD_BORDER_CENTER_Z:
+                Double newWorldCenterZ = (Double) configurable.value();
+                Double worldCenterZ = Bukkit.getWorld(config.getProp(WORLD_NAME.configName)).getWorldBorder().getCenter().getZ();
+                Bukkit.getWorld(config.getProp(WORLD_NAME.configName)).getWorldBorder().setCenter(worldCenterZ, newWorldCenterZ);
                 break;
             default:
                 break;
