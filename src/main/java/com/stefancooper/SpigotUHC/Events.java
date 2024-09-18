@@ -61,11 +61,8 @@ public class Events implements Listener {
     public void onRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         Location deathLocation = player.getLastDeathLocation();
-        if(deathLocation != null && player.getGameMode().equals(GameMode.SPECTATOR)){
+        if (deathLocation != null && player.getGameMode().equals(GameMode.SPECTATOR)) {
             event.setRespawnLocation(deathLocation);
-        } else {
-            Location fallbackLocation = new Location(player.getWorld(), 0, 64, 0);
-            event.setRespawnLocation(fallbackLocation);
         }
     }
 }
