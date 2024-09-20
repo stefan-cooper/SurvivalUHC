@@ -1,7 +1,10 @@
 package com.stefancooper.SpigotUHC;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import com.stefancooper.SpigotUHC.types.BossBarBorder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
@@ -32,16 +35,18 @@ import static com.stefancooper.SpigotUHC.resources.ConfigKey.WORLD_BORDER_CENTER
 import static com.stefancooper.SpigotUHC.resources.ConfigKey.WORLD_BORDER_FINAL_SIZE;
 import static com.stefancooper.SpigotUHC.resources.ConfigKey.WORLD_BORDER_GRACE_PERIOD;
 import static com.stefancooper.SpigotUHC.resources.ConfigKey.WORLD_BORDER_INITIAL_SIZE;
+import static com.stefancooper.SpigotUHC.resources.ConfigKey.WORLD_BORDER_IN_BOSSBAR;
 import static com.stefancooper.SpigotUHC.resources.ConfigKey.WORLD_BORDER_SHRINKING_PERIOD;
 import static com.stefancooper.SpigotUHC.resources.ConfigKey.WORLD_NAME;
 import static com.stefancooper.SpigotUHC.resources.ConfigKey.fromString;
 import static com.stefancooper.SpigotUHC.resources.Constants.PLAYER_HEAD;
-import com.stefancooper.SpigotUHC.resources.UHCTeam;
+import com.stefancooper.SpigotUHC.types.UHCTeam;
 import com.stefancooper.SpigotUHC.types.Configurable;
 
 public class ConfigParser {
 
     private final Config config;
+    private BossBarBorder bossBarBorder;
 
     public ConfigParser(Config config) {
         this.config = config;
@@ -69,6 +74,7 @@ public class ConfigParser {
             case PLAYER_HEAD_GOLDEN_APPLE -> new Configurable<>(PLAYER_HEAD_GOLDEN_APPLE, Boolean.parseBoolean((value)));
             case WORLD_NAME -> new Configurable<>(WORLD_NAME, value);
             case DIFFICULTY -> new Configurable<>(DIFFICULTY, Difficulty.valueOf(value));
+            case WORLD_BORDER_IN_BOSSBAR -> new Configurable<>(WORLD_BORDER_IN_BOSSBAR, Boolean.parseBoolean(value));
             case null -> null;
 
         };
