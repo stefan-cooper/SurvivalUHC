@@ -15,13 +15,14 @@ fi
 
 REFRESH_BUILD=${REFRESH_BUILD:-false}
 MINECRAFT_VERSION=${MINECRAFT_VERSION:-1.21.1}
-export MINECRAFT_VERSION=${MINECRAFT_VERSION}
+export MINECRAFT_VERSION="${MINECRAFT_VERSION}"
 
 ./build_plugin.sh
 
 mkdir -p server
 mkdir -p server/plugins
-cp build/SpigotUHC-0.0.1.jar server/plugins/SpigotUHC-0.0.1.jar
+PLUGIN_VERSION=$(mvn help:evaluate -Dexpression=UHCPlugin.version -q -DforceStdout)
+cp build/SpigotUHC-"${PLUGIN_VERSION}".jar server/plugins/SpigotUHC-"${PLUGIN_VERSION}".jar
 
 if [ "${REFRESH_BUILD}" = "true" ]; then
   cd server
