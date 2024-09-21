@@ -22,6 +22,7 @@ export MINECRAFT_VERSION="${MINECRAFT_VERSION}"
 mkdir -p server
 mkdir -p server/plugins
 PLUGIN_VERSION=$(mvn help:evaluate -Dexpression=UHCPlugin.version -q -DforceStdout)
+find ./server/plugins/ -name 'SpigotUHC-*.jar' -delete
 cp build/SpigotUHC-"${PLUGIN_VERSION}".jar server/plugins/SpigotUHC-"${PLUGIN_VERSION}".jar
 
 if [ "${REFRESH_BUILD}" = "true" ]; then
