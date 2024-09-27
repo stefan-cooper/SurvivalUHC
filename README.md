@@ -62,6 +62,8 @@ team.pink=SimplySqare
 player.head.golden.apple=false|true
 # (optional) show the current progress of the world border in the boss bar
 world.border.in.bossbar=false|true
+# (optional) enable timestamps of notable events
+enable.timestamps=boolean
 ```
 
 ## Commands
