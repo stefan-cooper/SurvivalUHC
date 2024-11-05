@@ -16,7 +16,12 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+
+import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
 import static com.stefancooper.SpigotUHC.enums.ConfigKey.*;
 
 public class BaseEvents implements Listener {
@@ -28,6 +33,20 @@ public class BaseEvents implements Listener {
     }
 
     // View docs for various events https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/package-summary.html
+
+    @Nullable
+    private Location getWorldSpawn() {
+        Optional<String> worldSpawnX = Optional.ofNullable(config.getProp(WORLD_SPAWN_X.configName));
+        Optional<String> worldSpawnY = Optional.ofNullable(config.getProp(WORLD_SPAWN_Y.configName));
+        Optional<String> worldSpawnZ = Optional.ofNullable(config.getProp(WORLD_SPAWN_Z.configName));
+        if (worldSpawnX.isPresent() && worldSpawnY.isPresent() && worldSpawnZ.isPresent()) {
+            int x = Integer.parseInt(worldSpawnX.get());
+            int y = Integer.parseInt(worldSpawnY.get());
+            int z = Integer.parseInt(worldSpawnZ.get());
+            return new Location(config.getWorlds().getOverworld(), x, y, z);
+        }
+        return null;
+    }
 
     // DamageSource API is experimental, so this may break in a spigot update
     @SuppressWarnings("UnstableApiUsage")
@@ -77,6 +96,12 @@ public class BaseEvents implements Listener {
         if (deathLocation != null && player.getGameMode().equals(GameMode.SPECTATOR)) {
             event.setRespawnLocation(deathLocation);
         }
+        if (!config.getPlugin().getStarted()) {
+            final Location worldSpawn = getWorldSpawn();
+            if (worldSpawn != null) {
+                event.setRespawnLocation(worldSpawn);
+            }
+        }
     }
 
     @EventHandler
@@ -88,6 +113,12 @@ public class BaseEvents implements Listener {
             event.getPlayer().setGameMode(GameMode.SURVIVAL);
         } else {
             event.getPlayer().setGameMode(GameMode.ADVENTURE);
+            final Location worldSpawn = getWorldSpawn();
+            final int inventorySize = Arrays.stream(event.getPlayer().getInventory().getContents()).filter(item -> item != null && item.getType() != Material.AIR).toList().size();
+            // don't teleport them if their inventory has something inside it (this suggests that the uhc has started and maybe the server crashed)
+            if (inventorySize == 0 && worldSpawn != null) {
+                event.getPlayer().teleport(worldSpawn);
+            }
         }
     }
 
