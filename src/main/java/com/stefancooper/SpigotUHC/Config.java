@@ -1,8 +1,10 @@
 package com.stefancooper.SpigotUHC;
 
+import com.stefancooper.SpigotUHC.enums.ConfigKey;
 import com.stefancooper.SpigotUHC.utils.Configurable;
 import com.stefancooper.SpigotUHC.types.Worlds;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -65,6 +67,16 @@ public class Config {
 
     public String getProp(String key) {
         return (String) config.get(key);
+    }
+
+    /** improved version of getProp, this will use the parsing that we've already done */
+    @Nullable
+    public <T> T getProperty(ConfigKey key) {
+        final String value = getProp(key.configName);
+        if (value != null) {
+            return (T) parser.propertyToConfigurable(key.configName, value).value();
+        }
+        return null;
     }
 
     public String getProps() {
