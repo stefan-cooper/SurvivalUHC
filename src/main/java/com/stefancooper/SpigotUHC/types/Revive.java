@@ -121,8 +121,14 @@ public class Revive {
 
                 revivee.spawnParticle(Particle.POOF, revivee.getLocation(), 1000);
 
-                // reviver effects
                 reviver.getInventory().remove(playerHead);
+
+                // reviver effects
+                if (playerHead.getAmount() > 1) {
+                    playerHead.setAmount(playerHead.getAmount() - 1);
+                    reviver.getInventory().addItem(playerHead);
+                }
+
             }
         };
     }
