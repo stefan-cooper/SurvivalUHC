@@ -53,7 +53,7 @@
     </build>
 
     <properties>
-        <UHCPlugin.version>2.3.0</UHCPlugin.version>
+        <UHCPlugin.version>2.4.0</UHCPlugin.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
     </properties>
@@ -94,6 +94,12 @@
             <groupId>com.github.seeseemelk</groupId>
             <artifactId>MockBukkit-v1.21</artifactId>
             <version>3.133.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.14.2</version>
             <scope>test</scope>
         </dependency>
         <!--This adds the Spigot API artifact to the build -->
