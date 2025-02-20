@@ -22,6 +22,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionEffectType;
 import com.stefancooper.SpigotUHC.Config;
 import com.stefancooper.SpigotUHC.utils.Utils;
+import org.bukkit.scheduler.BukkitTask;
 
 import static com.stefancooper.SpigotUHC.enums.ConfigKey.COUNTDOWN_TIMER_LENGTH;
 import static com.stefancooper.SpigotUHC.enums.ConfigKey.DIFFICULTY;
@@ -31,13 +32,19 @@ import static com.stefancooper.SpigotUHC.enums.ConfigKey.SPREAD_MIN_DISTANCE;
 import static com.stefancooper.SpigotUHC.enums.ConfigKey.WORLD_BORDER_CENTER_X;
 import static com.stefancooper.SpigotUHC.enums.ConfigKey.WORLD_BORDER_CENTER_Z;
 import static com.stefancooper.SpigotUHC.enums.ConfigKey.WORLD_BORDER_FINAL_SIZE;
+import static com.stefancooper.SpigotUHC.enums.ConfigKey.WORLD_BORDER_FINAL_Y;
 import static com.stefancooper.SpigotUHC.enums.ConfigKey.WORLD_BORDER_GRACE_PERIOD;
 import static com.stefancooper.SpigotUHC.enums.ConfigKey.WORLD_BORDER_INITIAL_SIZE;
 import static com.stefancooper.SpigotUHC.enums.ConfigKey.WORLD_BORDER_SHRINKING_PERIOD;
+import static com.stefancooper.SpigotUHC.enums.ConfigKey.WORLD_BORDER_Y_SHRINKING_PERIOD;
+import static com.stefancooper.SpigotUHC.utils.Constants.MAXIMUM_FINAL_SIZE_FOR_Y_SHRINK;
 
 public class StartCommand extends AbstractCommand {
 
     public static final String COMMAND_KEY = "start";
+
+    private static int shrinkYBorderBlock;
+    private BukkitTask runner;
 
     public StartCommand(CommandSender sender, Command cmd, String[] args, Config config) {
         super(sender, cmd, args, config);
@@ -45,6 +52,8 @@ public class StartCommand extends AbstractCommand {
 
     @Override
     public void execute() {
+        shrinkYBorderBlock = -64;
+
         // Worlds
         final World world = getConfig().getWorlds().getOverworld();
         final World nether = getConfig().getWorlds().getNether();
@@ -187,7 +196,39 @@ public class StartCommand extends AbstractCommand {
                 wb.setSize(Double.parseDouble(finalWorldBorderSize), Long.parseLong(shrinkingTime));
             });
 
+            if (Optional.ofNullable(getConfig().getProperty(WORLD_BORDER_Y_SHRINKING_PERIOD)).isPresent() &&
+                    Optional.ofNullable(getConfig().getProperty(WORLD_BORDER_FINAL_Y)).isPresent() &&
+                        Integer.parseInt(finalWorldBorderSize) <= MAXIMUM_FINAL_SIZE_FOR_Y_SHRINK) {
+                getConfig().getManagedResources().runTaskLater(shrinkYBorderOverTime(), Integer.parseInt(shrinkingTime));
+            }
+
             Bukkit.getOnlinePlayers().forEach(player -> player.sendTitle("World border shrinking", "Don't get caught..."));
+        };
+    }
+
+    protected Runnable shrinkYBorderOverTime() {
+        return () -> {
+            final int centerX = Integer.parseInt(getConfig().getProp(WORLD_BORDER_CENTER_X.configName));
+            final int centerZ = Integer.parseInt(getConfig().getProp(WORLD_BORDER_CENTER_Z.configName));
+            final int finalSize = Integer.parseInt(getConfig().getProp(WORLD_BORDER_FINAL_SIZE.configName));
+            final int finalY = Integer.parseInt(getConfig().getProp(WORLD_BORDER_FINAL_Y.configName));
+            final int shrinkTime = Integer.parseInt(getConfig().getProp(WORLD_BORDER_Y_SHRINKING_PERIOD.configName));
+            final int interval = shrinkTime / (finalY + 64);
+
+            int eitherSide = finalSize / 2;
+            int corner1X = centerX + eitherSide;
+            int corner2X = centerX - eitherSide;
+            int corner1Z = centerZ + eitherSide;
+            int corner2Z = centerZ - eitherSide;
+
+            runner = getConfig().getManagedResources().runRepeatingTask(() -> {
+                shrinkYBorderBlock++;
+                final String fillCommand = String.format("fill %s %s %s %s %s %s minecraft:bedrock", corner1X, shrinkYBorderBlock, corner1Z, corner2X, shrinkYBorderBlock, corner2Z);
+                getSender().getServer().dispatchCommand(Bukkit.getConsoleSender(), fillCommand);
+                if (shrinkYBorderBlock >= finalY) {
+                    runner.cancel();
+                }
+            }, interval);
         };
     }
 }
