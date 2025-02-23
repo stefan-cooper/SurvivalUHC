@@ -53,7 +53,7 @@
     </build>
 
     <properties>
-        <UHCPlugin.version>3.0.0</UHCPlugin.version>
+        <UHCPlugin.version>3.0.1</UHCPlugin.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
     </properties>
@@ -91,9 +91,9 @@
         </dependency>
         <!-- MockBukkit for unit testing -->
         <dependency>
-            <groupId>com.github.seeseemelk</groupId>
-            <artifactId>MockBukkit-v1.21</artifactId>
-            <version>3.133.2</version>
+            <groupId>org.mockbukkit.mockbukkit</groupId>
+            <artifactId>mockbukkit-v1.21</artifactId>
+            <version>4.33.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>
