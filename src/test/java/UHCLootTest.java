@@ -1,3 +1,4 @@
+import com.stefancooper.SpigotUHC.utils.Utils;
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 import org.mockbukkit.mockbukkit.block.BlockMock;
@@ -9,7 +10,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -73,25 +73,56 @@ public class UHCLootTest {
 
         server.execute("uhc", admin, "start");
 
-        // start uhc (so the world spawn should now be ignored)
-        Block chestBlock = world.getBlockAt(new Location(world, x, y, z));
-        ChestStateMock chest = (ChestStateMock) chestBlock.getState();
-        final List<ItemStack> initialContents = getLatestChestContents(chest);
-        assertEquals(0, initialContents.size());
-
         schedule.performOneTick();
 
-        final List<ItemStack> firstGeneration = getLatestChestContents(chest);
-
+        // start uhc (so the world spawn should now be ignored)
+        final List<ItemStack> firstGeneration = getLatestChestContents((ChestStateMock) world.getBlockAt(new Location(world, x, y, z)).getState());
         assertNotEquals(0, firstGeneration.size());
-        assertNotEquals(initialContents, firstGeneration);
+        assertEquals(firstGeneration, firstGeneration);
 
         schedule.performTicks(100);
 
-        final List<ItemStack> secondGeneration = getLatestChestContents(chest);
+        final List<ItemStack> secondGeneration = getLatestChestContents((ChestStateMock) world.getBlockAt(new Location(world, x, y, z)).getState());
 
         assertNotEquals(0, secondGeneration.size());
         assertNotEquals(firstGeneration, secondGeneration);
-        assertNotEquals(initialContents, secondGeneration);
+    }
+
+    @Test
+    void dynamicLootChestTest() {
+        BukkitSchedulerMock schedule = server.getScheduler();
+        String x = "750,1000";
+        String z = "250,500";
+        int lootFrequency = 5; // 100 ticks
+
+        // set world spawn
+        server.execute("uhc", admin, "set",
+                String.format("loot.chest.x.range=%s", x),
+                String.format("loot.chest.z.range=%s", z),
+                String.format("loot.chest.frequency=%s", lootFrequency),
+                String.format("loot.chest.enabled=%s", "true")
+        );
+
+        server.execute("uhc", admin, "start");
+
+        schedule.performOneTick();
+
+        Block firstGenerationChest = plugin.getUHCConfig().getManagedResources().getDynamicLootChestLocation();
+        assertEquals(Material.CHEST, firstGenerationChest.getType());
+
+        // start uhc (so the world spawn should now be ignored)
+        final List<ItemStack> firstGeneration = getLatestChestContents((ChestStateMock) world.getBlockAt(firstGenerationChest.getLocation()).getState());
+        assertNotEquals(0, firstGeneration.size());
+        assertEquals(firstGeneration, firstGeneration);
+
+        schedule.performTicks(100);
+
+        Block secondGenerationChest = plugin.getUHCConfig().getManagedResources().getDynamicLootChestLocation();
+        assertEquals(Material.AIR, firstGenerationChest.getType());
+        assertEquals(Material.CHEST, secondGenerationChest.getType());
+
+        final List<ItemStack> secondGeneration = getLatestChestContents((ChestStateMock) world.getBlockAt(secondGenerationChest.getLocation()).getState());
+        assertNotEquals(0, secondGeneration.size());
+        assertNotEquals(firstGeneration, secondGeneration);
     }
 }
