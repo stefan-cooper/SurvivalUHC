@@ -1,7 +1,6 @@
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.inventory.EquipmentSlot;
 import org.mockbukkit.mockbukkit.MockBukkit;
-import org.mockbukkit.mockbukkit.entity.ArmorStandMock;
 import org.mockbukkit.mockbukkit.entity.ItemEntityMock;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 import org.mockbukkit.mockbukkit.scheduler.BukkitSchedulerMock;
@@ -28,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.stefancooper.SpigotUHC.Defaults.DEFAULT_WORLD_NAME;
+import static com.stefancooper.SpigotUHC.Defaults.WORLD_NAME;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -45,7 +44,7 @@ public class ReviveTest {
     {
         server = MockBukkit.mock(new RespawnPlayerServerMock());
         plugin = MockBukkit.load(Plugin.class);
-        world = server.getWorld(DEFAULT_WORLD_NAME);
+        world = server.getWorld(WORLD_NAME);
         revivee = server.addPlayer("pavey");
         reviver = server.addPlayer("luke");
     }
@@ -79,6 +78,7 @@ public class ReviveTest {
         server.execute("uhc", admin, "set",
                 "team.red=pavey,luke",
                 "player.head.golden.apple=true",
+                "revive.via.platforms=true",
                 "revive.enabled=true",
                 "revive.hp=4",
                 "revive.lose.max.health=4",
@@ -143,6 +143,7 @@ public class ReviveTest {
         server.execute("uhc", admin, "set",
                 "team.red=pavey,luke",
                 "player.head.golden.apple=true",
+                "revive.via.platforms=true",
                 "revive.enabled=true",
                 "revive.hp=4",
                 "revive.lose.max.health=4",
@@ -425,6 +426,7 @@ public class ReviveTest {
         server.execute("uhc", admin, "set",
                 "team.red=pavey,luke",
                 "player.head.golden.apple=true",
+                "revive.via.platforms=true",
                 "revive.enabled=true",
                 "revive.hp=4",
                 "revive.lose.max.health=4",
@@ -508,6 +510,7 @@ public class ReviveTest {
         server.execute("uhc", admin, "set",
                 "team.red=pavey,luke",
                 "player.head.golden.apple=true",
+                "revive.via.platforms=true",
                 "revive.enabled=true",
                 "revive.hp=4",
                 "revive.lose.max.health=4",
