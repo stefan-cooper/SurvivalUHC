@@ -111,6 +111,8 @@ public class StartCommand extends AbstractCommand {
             }
         });
 
+        Bukkit.broadcastMessage("UHC: Countdown starting now. Don't forget to record your POV if you can. GLHF!");
+
         // Spread players
         // spreadplayers <x> <z> <spreadDistance> <maxRange> <teams> <targets>
         // See: https://minecraft.fandom.com/wiki/Commands/spreadplayers
@@ -122,9 +124,9 @@ public class StartCommand extends AbstractCommand {
         int worldBorderGracePeriod = getConfig().getProperty(WORLD_BORDER_GRACE_PERIOD, Defaults.WORLD_BORDER_GRACE_PERIOD);
 
         // World border grace period
-        if (worldBorderGracePeriod > 0) getConfig().getManagedResources().runTaskLater(endWorldBorderGracePeriod(), worldBorderGracePeriod);
+        if (worldBorderGracePeriod > 0) getConfig().getManagedResources().runTaskLater(endWorldBorderGracePeriod(), worldBorderGracePeriod + countdownTimer);
         // PVP Grace period
-        if (gracePeriod > 0) getConfig().getManagedResources().runTaskLater(endGracePeriod(), gracePeriod);
+        if (gracePeriod > 0) getConfig().getManagedResources().runTaskLater(endGracePeriod(), gracePeriod + countdownTimer);
 
         // Countdown timer
         for (int curr = 0; curr <= countdownTimer; curr++) {
@@ -151,7 +153,7 @@ public class StartCommand extends AbstractCommand {
 
         // UHC Loot
         if (UHCLoot.isConfigured(getConfig())) {
-            new UHCLoot(getConfig());
+            getConfig().getManagedResources().runTaskLater(() -> new UHCLoot(getConfig()), countdownTimer);
         }
 
         getConfig().getPlugin().setStarted(true);
@@ -178,6 +180,8 @@ public class StartCommand extends AbstractCommand {
 
     protected Runnable endGracePeriod () {
         return () -> {
+            Bukkit.broadcastMessage("UHC: PVP grace period is now over.");
+            getConfig().getManagedResources().addTimestamp("[Meta] PVP grace period is now over.");
             Utils.setWorldEffects(List.of(getConfig().getWorlds().getOverworld(), getConfig().getWorlds().getNether(), getConfig().getWorlds().getEnd()), (cbWorld) -> cbWorld.setPVP(true));
             Bukkit.getOnlinePlayers().forEach(player -> player.sendTitle("Grace period over", "\uD83D\uDC40 Watch your back \uD83D\uDC40"));
         };
@@ -185,6 +189,7 @@ public class StartCommand extends AbstractCommand {
 
     protected Runnable endWorldBorderGracePeriod () {
         return () -> {
+
             int finalWorldBorderSize = getConfig().getProperty(WORLD_BORDER_FINAL_SIZE, Defaults.WORLD_BORDER_FINAL_SIZE);
             int shrinkingTime = getConfig().getProperty(WORLD_BORDER_SHRINKING_PERIOD, Defaults.WORLD_BORDER_SHRINKING_PERIOD);
 
@@ -201,6 +206,8 @@ public class StartCommand extends AbstractCommand {
                 getConfig().getManagedResources().runTaskLater(shrinkYBorderOverTime(), shrinkingTime);
             }
 
+            Bukkit.broadcastMessage("UHC: World Border shrink grace period is now over.");
+            getConfig().getManagedResources().addTimestamp("[Meta] World Border shrink grace period is now over.");
             Bukkit.getOnlinePlayers().forEach(player -> player.sendTitle("World border shrinking", "Don't get caught..."));
         };
     }
@@ -221,6 +228,8 @@ public class StartCommand extends AbstractCommand {
             int corner2Z = centerZ - eitherSide;
 
             if (shrinkTime > 0) {
+                Bukkit.broadcastMessage("UHC: Y Border shrink grace period over.");
+                getConfig().getManagedResources().addTimestamp("[Meta] Y Border shrink grace period over.");
                 runner = getConfig().getManagedResources().runRepeatingTask(() -> {
                     shrinkYBorderBlock++;
                     final String fillCommand = String.format("fill %s %s %s %s %s %s minecraft:bedrock", corner1X, shrinkYBorderBlock, corner1Z, corner2X, shrinkYBorderBlock, corner2Z);
