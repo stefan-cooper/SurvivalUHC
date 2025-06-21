@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -36,7 +37,7 @@ import static com.stefancooper.SpigotUHC.enums.ConfigKey.LOOT_CHEST_Z_RANGE;
 
 public class UHCLoot {
 
-    private static final List<Material> lowTier = List.of(
+    private static List<Material> lowTier = List.of(
             Material.APPLE,
             Material.IRON_INGOT,
             Material.STRING,
@@ -52,9 +53,11 @@ public class UHCLoot {
             Material.NETHER_WART,
             Material.CAULDRON,
             Material.ARROW,
-            Material.WIND_CHARGE
+            Material.WIND_CHARGE,
+            Material.SNOWBALL
     );
-    private static final List<Material> midTier = List.of(
+
+    private static List<Material> midTier = List.of(
             Material.SADDLE,
             Material.TNT,
             Material.SPYGLASS,
@@ -73,6 +76,7 @@ public class UHCLoot {
             Material.POTION,
             Material.SPLASH_POTION
     );
+
     private static final List<Material> highTier = List.of(
             Material.MACE,
             Material.BOW,
@@ -85,6 +89,8 @@ public class UHCLoot {
             Material.SPLASH_POTION
     );
 
+
+
     public UHCLoot(final Config config) {
         if (!UHCLoot.isConfigured(config)) return;
         final Integer lootFrequency = config.getProperty(LOOT_CHEST_FREQUENCY, Defaults.LOOT_CHEST_FREQUENCY);
@@ -94,6 +100,18 @@ public class UHCLoot {
         final String chestXRange = config.getProperty(LOOT_CHEST_X_RANGE);
         final String chestZRange = config.getProperty(LOOT_CHEST_Z_RANGE);
         final Random random = new Random();
+
+        // TODO - remove this when MockBukkit supports 1.21.6
+        //        add to original lists rather than adding them later here
+        if (!Utils.testMode()) {
+            List<Material> updateLowTier = new ArrayList<>(lowTier);
+            updateLowTier.add(Material.ORANGE_HARNESS);
+            lowTier = updateLowTier.stream().toList();
+
+            List<Material> updateMidTier = new ArrayList<>(midTier);
+            updateLowTier.add(Material.DRIED_GHAST);
+            midTier = updateMidTier.stream().toList();
+        }
 
         config.getManagedResources().runRepeatingTask(() -> {
             boolean usingStaticLootChestLocation;
@@ -213,6 +231,7 @@ public class UHCLoot {
             case Material.DIAMOND -> item.setAmount(3);
             case Material.NETHER_WART -> item.setAmount(8);
             case Material.WIND_CHARGE -> item.setAmount(3);
+            case Material.SNOWBALL -> item.setAmount(16);
         }
     }
 
