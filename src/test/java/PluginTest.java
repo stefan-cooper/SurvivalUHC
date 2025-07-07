@@ -1,13 +1,13 @@
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
-import com.stefancooper.SpigotUHC.Plugin;
+import com.stefancooper.SurvivalUHC.Plugin;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.junit.jupiter.api.*;
 
-import static com.stefancooper.SpigotUHC.Defaults.*;
+import static com.stefancooper.SurvivalUHC.Defaults.*;
 
 public class PluginTest {
 
@@ -39,11 +39,9 @@ public class PluginTest {
     void testGameRules() {
         PlayerMock player = server.addPlayer();
         Assertions.assertNotNull(world);
-        Assertions.assertFalse(world.getGameRuleValue(GameRule.DO_INSOMNIA));
         Assertions.assertFalse(world.getGameRuleValue(GameRule.NATURAL_REGENERATION));
-        Assertions.assertFalse(world.getGameRuleValue(GameRule.LOCATOR_BAR));
-        Assertions.assertFalse(world.getPVP());
-        Assertions.assertEquals(GameMode.ADVENTURE, player.getGameMode());
+        Assertions.assertTrue(world.getPVP());
+        Assertions.assertEquals(GameMode.SURVIVAL, player.getGameMode());
     }
 
     @Test
@@ -51,16 +49,5 @@ public class PluginTest {
     void testPlayerScoreboard() {
         PlayerMock player = server.addPlayer();
         Assertions.assertNotNull(player.getScoreboard().getObjective(HEALTH_OBJECTIVE));
-    }
-
-    @Test
-    @DisplayName("World border configs are set to the default")
-    void testWorldBorderDefaults() {
-        Assertions.assertNotNull(world.getWorldBorder());
-        Assertions.assertEquals(0, world.getWorldBorder().getDamageAmount());
-        Assertions.assertEquals(5, world.getWorldBorder().getDamageBuffer());
-        Assertions.assertEquals(WORLD_BORDER_INITIAL_SIZE, world.getWorldBorder().getSize());
-        Assertions.assertEquals(WORLD_BORDER_CENTER_X, world.getWorldBorder().getCenter().getX());
-        Assertions.assertEquals(WORLD_BORDER_CENTER_Z, world.getWorldBorder().getCenter().getZ());
     }
 }

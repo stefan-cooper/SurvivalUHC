@@ -1,7 +1,7 @@
-name: SpigotUHC
-version: 5.0.0
+name: SurvivalUHC
+version: 1.0.0
 author: Stefan Cooper
-main: com.stefancooper.SpigotUHC.Plugin
+main: com.stefancooper.SurvivalUHC.Plugin
 api-version: 1.21
 website: https://stefancooper.com
 commands:
@@ -13,11 +13,11 @@ commands:
       
       Set config value:
       
-      /uhc set world.border.initial.size=500
+      /uhc set revive.hp=4
       
       Set multiple config values:
       
-      /uhc set world.border.initial.size=500 world.border.final.size=250
+      /uhc set revive.hp=4 revive.enabled=true
       
       View full config:
       
@@ -25,31 +25,15 @@ commands:
       
       View a specific config value:
 
-      /uhc view world.border.initial.size
+      /uhc view revive.hp
       
       Unset config value:
 
-      /uhc unset world.border.initial.size
+      /uhc unset revive.hp
       
       Unset multiple config values:
 
-      /uhc unset world.border.initial.size world.border.final.size
-      
-      Start the UHC:
-      
-      /uhc start
-      
-      Start a UHC midway/resume a UHC
-
-      /uhc resume <minutes>
-      
-      Late start a specific user:
-
-      /uhc latestart <username>
-      
-      End/cancel the UHC:
-      
-      /uhc cancel
+      /uhc unset revive.hp revive.enabled
       
       Manually enable/disable pvp:
       

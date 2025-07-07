@@ -2,7 +2,7 @@ import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 import org.mockbukkit.mockbukkit.inventory.InventoryMock;
-import com.stefancooper.SpigotUHC.Plugin;
+import com.stefancooper.SurvivalUHC.Plugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -12,8 +12,8 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.scoreboard.Scoreboard;
 import org.junit.jupiter.api.*;
 
-import static com.stefancooper.SpigotUHC.Defaults.WORLD_NAME;
-import static com.stefancooper.SpigotUHC.utils.Constants.PLAYER_HEAD;
+import static com.stefancooper.SurvivalUHC.Defaults.WORLD_NAME;
+import static com.stefancooper.SurvivalUHC.utils.Constants.PLAYER_HEAD;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SetConfigTest {
@@ -39,77 +39,6 @@ public class SetConfigTest {
     public static void unload() {
         plugin.getUHCConfig().resetToDefaults();
         MockBukkit.unmock();
-    }
-
-    @Test
-    @DisplayName("Test set initial world border command")
-    void testPlayerSetInitialWorldBorderSize() {
-        PlayerMock player = server.addPlayer();
-        player.setOp(true);
-        Assertions.assertEquals(Double.parseDouble("2000"), world.getWorldBorder().getSize());
-        server.execute("uhc", player, "set", "world.border.initial.size=50");
-        Assertions.assertEquals(Double.parseDouble("50"), world.getWorldBorder().getSize());
-    }
-
-    @Test
-    @DisplayName("Test set world border center x")
-    void testPlayerSetWorldBorderCenterX() {
-        PlayerMock player = server.addPlayer();
-        player.setOp(true);
-        server.execute("uhc", player, "set", "world.border.center.x=25");
-        Assertions.assertEquals(Double.parseDouble("25"), world.getWorldBorder().getCenter().getX());
-    }
-
-    @Test
-    @DisplayName("Test set world border center z")
-    void testPlayerSetWorldBorderCenterZ() {
-        PlayerMock player = server.addPlayer();
-        player.setOp(true);
-        server.execute("uhc", player, "set", "world.border.center.z=25");
-        Assertions.assertEquals(Double.parseDouble("25"), world.getWorldBorder().getCenter().getZ());
-    }
-
-    @Test
-    @DisplayName("Test set teams test")
-    void testPlayerSetTeams() {
-        PlayerMock admin = server.addPlayer();
-        admin.setOp(true);
-
-        PlayerMock stefan = server.addPlayer();
-        stefan.setName("stefan");
-        PlayerMock jawad = server.addPlayer();
-        jawad.setName("jawad");
-        PlayerMock shurf = server.addPlayer();
-        shurf.setName("shurf");
-        PlayerMock sean = server.addPlayer();
-        sean.setName("sean");
-        PlayerMock pavey = server.addPlayer();
-        pavey.setName("pavey");
-        PlayerMock luke = server.addPlayer();
-        luke.setName("luke");
-        PlayerMock tim = server.addPlayer();
-        tim.setName("tim");
-
-        server.execute("uhc", admin, "set", "team.red=stefan,jawad");
-        server.execute("uhc", admin, "set", "team.blue=shurf");
-        server.execute("uhc", admin, "set", "team.green=sean");
-        server.execute("uhc", admin, "set", "team.orange=pavey");
-        server.execute("uhc", admin, "set", "team.pink=luke");
-        server.execute("uhc", admin, "set", "team.purple=tim");
-
-        Scoreboard scoreboard = admin.getScoreboard();
-
-        assertTrue(scoreboard.getEntityTeam(stefan).getName().equals("Red"));
-        assertTrue(scoreboard.getEntityTeam(jawad).getName().equals("Red"));
-        assertTrue(scoreboard.getEntityTeam(shurf).getName().equals("Blue"));
-        assertTrue(scoreboard.getEntityTeam(sean).getName().equals("Green"));
-        assertTrue(scoreboard.getEntityTeam(pavey).getName().equals("Orange"));
-        assertTrue(scoreboard.getEntityTeam(luke).getName().equals("Pink"));
-        assertTrue(scoreboard.getEntityTeam(tim).getName().equals("Purple"));
-
-        server.execute("uhc", admin, "set", "team.yellow=jawad");
-        assertTrue(scoreboard.getEntityTeam(stefan).getName().equals("Red"));
-        assertTrue(scoreboard.getEntityTeam(jawad).getName().equals("Yellow"));
     }
 
     @Test

@@ -2,8 +2,8 @@ import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 import org.mockbukkit.mockbukkit.scheduler.BukkitSchedulerMock;
-import com.stefancooper.SpigotUHC.Plugin;
-import com.stefancooper.SpigotUHC.utils.Utils;
+import com.stefancooper.SurvivalUHC.Plugin;
+import com.stefancooper.SurvivalUHC.utils.Utils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
-import static com.stefancooper.SpigotUHC.Defaults.WORLD_NAME;
+import static com.stefancooper.SurvivalUHC.Defaults.WORLD_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -105,9 +105,6 @@ public class EventTest {
         admin.setOp(true);
 
         PlayerMock player = server.addPlayer();
-        assertEquals(GameMode.ADVENTURE, player.getGameMode());
-
-        server.execute("uhc", admin, "start");
 
         assertEquals(GameMode.SURVIVAL, player.getGameMode());
 
@@ -125,63 +122,6 @@ public class EventTest {
         player.reconnect();
 
         assertEquals(GameMode.SPECTATOR, player.getGameMode());
-
-        server.execute("uhc", admin, "cancel");
-
-        assertEquals(GameMode.ADVENTURE, player.getGameMode());
-
-        player.disconnect();
-        player.reconnect();
-
-        assertEquals(GameMode.ADVENTURE, player.getGameMode());
-    }
-
-    @Test
-    void preventMovementDuringCountdown() throws InterruptedException {
-        BukkitSchedulerMock scheduler = server.getScheduler();
-        PlayerMock admin = server.addPlayer();
-        admin.setOp(true);
-
-        PlayerMock player = server.addPlayer();
-
-        server.execute("uhc", admin, "set", "countdown.timer.length=5");
-
-        Location initialLocation = player.getLocation();
-        Location newLocation1 = initialLocation.clone();
-        Location newLocation2 = initialLocation.clone();
-        Location newLocation3 = initialLocation.clone();
-        newLocation1.setX(initialLocation.x() + 1);
-        newLocation2.setY(initialLocation.y() + 1);
-        newLocation3.setZ(initialLocation.z() + 1);
-
-        // Assert that they can move in all directions and they get moved
-        player.simulatePlayerMove(newLocation1);
-        assertEquals(player.getLocation(), newLocation1);
-        player.simulatePlayerMove(newLocation2);
-        assertEquals(player.getLocation(), newLocation2);
-        player.simulatePlayerMove(newLocation3);
-        assertEquals(player.getLocation(), newLocation3);
-
-        // Reset back to original location
-        player.simulatePlayerMove(initialLocation);
-        server.execute("uhc", admin, "start");
-
-        assertEquals(player.getLocation(), initialLocation);
-        player.simulatePlayerMove(newLocation1);
-        assertEquals(player.getLocation(), initialLocation);
-        player.simulatePlayerMove(newLocation2);
-        assertEquals(player.getLocation(), initialLocation);
-        player.simulatePlayerMove(newLocation3);
-        assertEquals(player.getLocation(), initialLocation);
-
-        scheduler.performTicks(Utils.secondsToTicks(5));
-
-        player.simulatePlayerMove(newLocation1);
-        assertEquals(player.getLocation(), newLocation1);
-        player.simulatePlayerMove(newLocation2);
-        assertEquals(player.getLocation(), newLocation2);
-        player.simulatePlayerMove(newLocation3);
-        assertEquals(player.getLocation(), newLocation3);
     }
 
     @Test
@@ -194,13 +134,9 @@ public class EventTest {
         PlayerMock player2 = server.addPlayer();
         PlayerMock player3 = server.addPlayer();
 
-        server.execute("uhc", admin, "cancel");
-        server.execute("uhc", admin, "start");
-
         player1.damage(100);
 
         player2.assertSoundHeard(Sound.ENTITY_LIGHTNING_BOLT_THUNDER);
         player3.assertSoundHeard(Sound.ENTITY_LIGHTNING_BOLT_THUNDER);
-        server.execute("uhc", admin, "cancel");
     }
 }

@@ -1,7 +1,7 @@
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
-import com.stefancooper.SpigotUHC.Plugin;
+import com.stefancooper.SurvivalUHC.Plugin;
 import org.bukkit.World;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static com.stefancooper.SpigotUHC.Defaults.*;
+import static com.stefancooper.SurvivalUHC.Defaults.*;
 
 public class PvpCommandTest {
 
@@ -46,10 +46,13 @@ public class PvpCommandTest {
                 Arguments.of("true", true),
                 Arguments.of("TRUE", true),
                 Arguments.of("tRUe", true),
-                Arguments.of("false", false),
                 Arguments.of("trueeee", false),
+                Arguments.of("falseee", false),
+                Arguments.of("fals", false),
                 Arguments.of("tru", false),
-                Arguments.of("fAlse", false)
+                Arguments.of("fAlse", false),
+                Arguments.of("false", false)
+
         );
     }
 
@@ -60,10 +63,12 @@ public class PvpCommandTest {
         PlayerMock admin = server.addPlayer();
         admin.setOp(true);
 
+        server.execute("uhc", admin, "pvp", "true");
+
         // should be false before UHC starts
-        Assertions.assertEquals(false, world.getPVP());
-        Assertions.assertEquals(false, nether.getPVP());
-        Assertions.assertEquals(false, end.getPVP());
+        Assertions.assertEquals(true, world.getPVP());
+        Assertions.assertEquals(true, nether.getPVP());
+        Assertions.assertEquals(true, end.getPVP());
 
         // manually set uhc pvp
         server.execute("uhc", admin, "pvp", commandArg);
